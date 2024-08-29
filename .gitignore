@@ -1,0 +1,35 @@
+# Archivos y carpetas específicos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Archivos de IDE
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de registro
+*.log
+
+# Archivos de salida
+*.pdf
+
+# Carpeta de distribución
+dist/
+build/
+
+# Archivos de configuración local
+.env
