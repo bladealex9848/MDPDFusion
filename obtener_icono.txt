@@ -1,0 +1,15 @@
+Para añadir un icono a MDPDFusion:
+
+1. Descarga un icono en formato .ico (para Windows) o .icns (para macOS).
+   Puedes crear uno en sitios como:
+   - https://convertio.co/es/png-ico/
+   - https://icoconvert.com/
+   - https://iconverticons.com/
+
+2. Guarda el archivo como "icon.ico" en el directorio principal de MDPDFusion.
+
+3. Para Windows, el script de instalación del menú contextual ya está configurado para usar este icono.
+
+4. Para macOS, necesitarás modificar el servicio manualmente para añadir el icono.
+
+Nota: Si no encuentras un icono, puedes usar cualquier imagen de PDF o Markdown y convertirla a formato .ico/.icns usando las herramientas mencionadas anteriormente.

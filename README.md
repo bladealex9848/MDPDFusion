@@ -4,14 +4,25 @@
   <img src="assets/logo.png" alt="MDPDFusion Logo">
 </p>
 
-MDPDFusion es una aplicación de Streamlit que permite a los usuarios convertir múltiples archivos Markdown (.md) a PDF de manera sencilla y eficiente.
+MDPDFusion es una herramienta versátil que permite a los usuarios convertir archivos Markdown (.md) a PDF de manera sencilla y eficiente, ya sea a través de una interfaz web, línea de comandos o integración con el sistema operativo.
 
 ## Características
 
-- Interfaz gráfica intuitiva construida con Streamlit
-- Soporte para la carga de múltiples archivos .md
-- Conversión rápida de Markdown a PDF
-- Descarga inmediata de los archivos PDF generados
+- **Múltiples formas de uso**:
+  - Interfaz web intuitiva construida con Streamlit
+  - Herramienta de línea de comandos (CLI)
+  - Integración con el menú contextual del sistema operativo (Windows y macOS)
+  - Arrastrar y soltar archivos para conversión rápida
+- **Conversión de alta calidad**:
+  - Preservación fiel del formato Markdown (negritas, cursivas, listas, etc.)
+  - Soporte para tablas con formato visual adecuado
+  - Bloques de código con resaltado de sintaxis
+  - Imágenes con ajuste automático de tamaño
+  - Enlaces internos funcionales entre secciones del documento
+- **Flexibilidad**:
+  - Soporte para la carga de múltiples archivos .md
+  - Conversión rápida y eficiente
+  - Opciones de personalización de salida
 
 ## Requisitos
 
@@ -77,6 +88,8 @@ MDPDFusion es una aplicación de Streamlit que permite a los usuarios convertir 
 
 ## Uso
 
+### Interfaz Web (Streamlit)
+
 1. Asegúrate de que el entorno virtual esté activado.
 
 2. Ejecuta la aplicación:
@@ -89,6 +102,70 @@ MDPDFusion es una aplicación de Streamlit que permite a los usuarios convertir 
 4. Sube tus archivos .md usando el botón de carga de archivos
 
 5. Haz clic en los botones de descarga para obtener tus archivos PDF convertidos
+
+### Línea de Comandos (CLI)
+
+El CLI permite convertir archivos Markdown desde la terminal:
+
+```bash
+# Convertir un archivo
+python mdpdfusion_cli.py archivo.md
+
+# Convertir múltiples archivos
+python mdpdfusion_cli.py archivo1.md archivo2.md
+
+# Especificar directorio de salida
+python mdpdfusion_cli.py -o directorio_salida archivo.md
+
+# Mostrar información detallada
+python mdpdfusion_cli.py -v archivo.md
+```
+
+### Arrastrar y Soltar (Windows)
+
+1. Simplemente arrastra uno o más archivos .md sobre el archivo `MDPDFusion.bat`
+2. Los archivos PDF se generarán en el mismo directorio que los archivos .md originales
+
+### Integración con el Menú Contextual
+
+#### Windows
+
+1. Ejecuta `instalar_menu_contextual.bat` como administrador (clic derecho > Ejecutar como administrador)
+2. Ahora puedes hacer clic derecho en cualquier archivo .md y seleccionar "Convertir a PDF con MDPDFusion"
+3. Para desinstalar, ejecuta `desinstalar_menu_contextual.bat` como administrador
+
+#### macOS
+
+1. Ejecuta `instalar_servicio_mac.command` (clic derecho > Abrir)
+2. Ahora puedes hacer clic derecho en cualquier archivo .md, ir a Servicios y seleccionar "Convertir a PDF con MDPDFusion"
+
+## Características Avanzadas
+
+### Enlaces Internos
+
+MDPDFusion soporta enlaces internos entre secciones del documento:
+
+```markdown
+## Mi Sección
+
+Contenido...
+
+[Enlace a la sección](#mi-sección)
+```
+
+Los enlaces internos se convierten automáticamente en enlaces funcionales en el PDF generado.
+
+### Manejo de Errores
+
+Si encuentras problemas con enlaces internos, MDPDFusion intentará recuperarse automáticamente:
+
+1. Verifica que los enlaces internos apunten a secciones que existen en el documento
+2. Asegúrate de que los IDs de ancla sean válidos (solo letras minúsculas, números, guiones y guiones bajos)
+3. Revisa los mensajes de error para identificar enlaces problemáticos
+
+### Personalización
+
+Para obtener información detallada sobre la integración con el sistema operativo, consulta el archivo [INTEGRACION.md](INTEGRACION.md).
 
 ## Contribuir
 

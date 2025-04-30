@@ -362,19 +362,75 @@ def convert_with_reportlab(md_content, output_pdf):
 
                 continue
 
-            # Procesar encabezados con formato en línea
+            # Procesar encabezados con formato en línea y generar anclas
             if line.startswith('# '):
-                # Aplicar formato en línea al texto del encabezado
-                formatted_text = process_inline_formatting(line[2:])
+                # Crear un ID de ancla a partir del texto del encabezado
+                heading_text = line[2:]
+                # Primero eliminar marcas de formato
+                clean_text = re.sub(r'\*\*|\*|__|_|`', '', heading_text)
+                # Convertir a minúsculas
+                anchor_id = clean_text.lower()
+                # Reemplazar espacios y caracteres especiales con guiones
+                anchor_id = re.sub(r'\s+', '-', anchor_id)  # Espacios a guiones
+                anchor_id = re.sub(r'[^a-z0-9_-]', '-', anchor_id)  # Otros caracteres a guiones
+                # Eliminar guiones múltiples
+                anchor_id = re.sub(r'-+', '-', anchor_id)
+                # Eliminar guiones al inicio y final
+                anchor_id = anchor_id.strip('-')
+
+                # Aplicar formato en línea al texto del encabezado y añadir ancla
+                formatted_text = f'<a name="{anchor_id}"/>' + process_inline_formatting(heading_text)
                 flowables.append(Paragraph(formatted_text, styles['Title']))
+
             elif line.startswith('## '):
-                formatted_text = process_inline_formatting(line[3:])
+                heading_text = line[3:]
+                # Primero eliminar marcas de formato
+                clean_text = re.sub(r'\*\*|\*|__|_|`', '', heading_text)
+                # Convertir a minúsculas
+                anchor_id = clean_text.lower()
+                # Reemplazar espacios y caracteres especiales con guiones
+                anchor_id = re.sub(r'\s+', '-', anchor_id)  # Espacios a guiones
+                anchor_id = re.sub(r'[^a-z0-9_-]', '-', anchor_id)  # Otros caracteres a guiones
+                # Eliminar guiones múltiples
+                anchor_id = re.sub(r'-+', '-', anchor_id)
+                # Eliminar guiones al inicio y final
+                anchor_id = anchor_id.strip('-')
+
+                formatted_text = f'<a name="{anchor_id}"/>' + process_inline_formatting(heading_text)
                 flowables.append(Paragraph(formatted_text, styles['Heading2']))
+
             elif line.startswith('### '):
-                formatted_text = process_inline_formatting(line[4:])
+                heading_text = line[4:]
+                # Primero eliminar marcas de formato
+                clean_text = re.sub(r'\*\*|\*|__|_|`', '', heading_text)
+                # Convertir a minúsculas
+                anchor_id = clean_text.lower()
+                # Reemplazar espacios y caracteres especiales con guiones
+                anchor_id = re.sub(r'\s+', '-', anchor_id)  # Espacios a guiones
+                anchor_id = re.sub(r'[^a-z0-9_-]', '-', anchor_id)  # Otros caracteres a guiones
+                # Eliminar guiones múltiples
+                anchor_id = re.sub(r'-+', '-', anchor_id)
+                # Eliminar guiones al inicio y final
+                anchor_id = anchor_id.strip('-')
+
+                formatted_text = f'<a name="{anchor_id}"/>' + process_inline_formatting(heading_text)
                 flowables.append(Paragraph(formatted_text, heading3_style))
+
             elif line.startswith('#### '):
-                formatted_text = process_inline_formatting(line[5:])
+                heading_text = line[5:]
+                # Primero eliminar marcas de formato
+                clean_text = re.sub(r'\*\*|\*|__|_|`', '', heading_text)
+                # Convertir a minúsculas
+                anchor_id = clean_text.lower()
+                # Reemplazar espacios y caracteres especiales con guiones
+                anchor_id = re.sub(r'\s+', '-', anchor_id)  # Espacios a guiones
+                anchor_id = re.sub(r'[^a-z0-9_-]', '-', anchor_id)  # Otros caracteres a guiones
+                # Eliminar guiones múltiples
+                anchor_id = re.sub(r'-+', '-', anchor_id)
+                # Eliminar guiones al inicio y final
+                anchor_id = anchor_id.strip('-')
+
+                formatted_text = f'<a name="{anchor_id}"/>' + process_inline_formatting(heading_text)
                 flowables.append(Paragraph(formatted_text, heading4_style))
 
             # Procesar listas no ordenadas con anidamiento
@@ -444,7 +500,28 @@ def process_inline_formatting(text):
     text = re.sub(r'`(.*?)`', r'<font face="Courier">\1</font>', text)
 
     # Enlaces [texto](url)
-    text = re.sub(r'\[(.*?)\]\((.*?)\)', r'<link href="\2">\1</link>', text)
+    # Manejar enlaces internos (con # al inicio) de manera especial
+    def process_link(match):
+        text, url = match.groups()
+        # Si es un enlace interno (comienza con #)
+        if url.startswith('#'):
+            # Eliminar el # inicial
+            anchor_text = url[1:]
+            # Convertir a minúsculas
+            anchor = anchor_text.lower()
+            # Reemplazar espacios y caracteres especiales con guiones
+            anchor = re.sub(r'\s+', '-', anchor)  # Espacios a guiones
+            anchor = re.sub(r'[^a-z0-9_-]', '-', anchor)  # Otros caracteres a guiones
+            # Eliminar guiones múltiples
+            anchor = re.sub(r'-+', '-', anchor)
+            # Eliminar guiones al inicio y final
+            anchor = anchor.strip('-')
+            # Para ReportLab, usamos <a name=""> para anclas y <link> para enlaces
+            return f'<link href="#{anchor}">{text}</link>'
+        else:
+            return f'<link href="{url}">{text}</link>'
+
+    text = re.sub(r'\[(.*?)\]\((.*?)\)', process_link, text)
 
     # Tachado: ~~texto~~
     text = re.sub(r'~~(.*?)~~', r'<strike>\1</strike>', text)
@@ -469,15 +546,39 @@ def convert_md_to_pdf(md_file, output_folder):
             return output_pdf
 
         # Si falla, usar reportlab como última opción
-        if convert_with_reportlab(md_content, output_pdf):
-            logger.info("Conversión exitosa con reportlab")
-            return output_pdf
+        try:
+            if convert_with_reportlab(md_content, output_pdf):
+                logger.info("Conversión exitosa con reportlab")
+                return output_pdf
+        except ValueError as ve:
+            # Manejar específicamente errores de enlaces
+            if "format not resolved" in str(ve) and "missing URL scheme or undefined destination target" in str(ve):
+                target = str(ve).split("'")[-2] if "'" in str(ve) else "desconocido"
+                logger.error(f"Error en enlaces internos: No se pudo resolver el enlace a '{target}'. "
+                            f"Esto puede ocurrir cuando un enlace apunta a una sección que no existe o tiene formato incorrecto.")
+                # Intentar nuevamente con una versión modificada que ignore enlaces problemáticos
+                try:
+                    # Modificar el contenido para marcar los enlaces problemáticos
+                    modified_content = md_content.replace(f"(#{target})", f"(#ERROR-ENLACE-{target})")
+                    if convert_with_reportlab(modified_content, output_pdf):
+                        logger.warning(f"Conversión completada con advertencias: Algunos enlaces internos pueden no funcionar correctamente.")
+                        return output_pdf
+                except Exception as retry_error:
+                    logger.error(f"Error en segundo intento: {str(retry_error)}")
+            else:
+                # Otros errores de ValueError
+                logger.error(f"Error de valor en la conversión: {str(ve)}")
+        except Exception as e:
+            # Otros errores en reportlab
+            logger.error(f"Error en la conversión con reportlab: {str(e)}")
+            traceback.print_exc()
 
         # Si todas las conversiones fallan, registrar un error
         logger.error("Todas las conversiones fallaron")
         return None
     except Exception as e:
         logger.error(f"Error inesperado en convert_md_to_pdf: {str(e)}")
+        traceback.print_exc()
         return None
 
 def main():

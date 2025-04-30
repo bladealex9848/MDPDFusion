@@ -5,6 +5,46 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2023-04-30
+
+### Corregido
+- Algoritmo mejorado para generación de IDs de ancla consistentes
+- Compatibilidad con ReportLab para enlaces internos
+- Manejo de caracteres especiales en enlaces y anclas
+- Solución para documentos con subsecciones anidadas
+
+### Mejorado
+- Normalización de IDs de ancla para mayor compatibilidad
+- Algoritmo robusto para convertir texto a IDs válidos
+- Mejor manejo de espacios y caracteres especiales en enlaces
+
+## [0.3.1] - 2023-04-30
+
+### Corregido
+- Soporte para enlaces internos entre secciones del documento
+- Generación automática de anclas para encabezados
+- Manejo mejorado de errores para enlaces no resueltos
+- Recuperación automática ante errores de enlaces internos
+
+### Mejorado
+- Mensajes de error más descriptivos para facilitar la depuración
+- Procesamiento de IDs de anclas para mayor compatibilidad
+- Documentación sobre el manejo de enlaces internos
+
+## [0.3.0] - 2023-04-30
+
+### Agregado
+- Herramienta de línea de comandos (CLI) para conversión desde terminal
+- Script batch para arrastrar y soltar archivos en Windows
+- Integración con el menú contextual de Windows
+- Scripts para macOS (archivo .command y servicio del sistema)
+- Documentación detallada para todas las nuevas funcionalidades
+
+### Mejorado
+- Estructura del proyecto para soportar múltiples formas de uso
+- Documentación en README.md con instrucciones para todas las opciones
+- Manejo de errores y logging en el CLI
+
 ## [0.2.1] - 2023-04-30
 
 ### Corregido
@@ -58,7 +98,10 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ### Corregido
 - Manejo de errores durante la conversión de archivos
 
-[Unreleased]: https://github.com/bladealex9848/MDPDFusion/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/bladealex9848/MDPDFusion/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/bladealex9848/MDPDFusion/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/bladealex9848/MDPDFusion/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/bladealex9848/MDPDFusion/releases/tag/v0.1.0
