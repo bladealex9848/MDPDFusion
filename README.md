@@ -1,7 +1,7 @@
 # MDPDFusion
 
 <p align="center">
-  <img src="assets/logo.png" alt="MDPDFusion Logo" width="200">
+  <img src="assets/logo.png" alt="MDPDFusion Logo">
 </p>
 
 MDPDFusion es una aplicación de Streamlit que permite a los usuarios convertir múltiples archivos Markdown (.md) a PDF de manera sencilla y eficiente.
