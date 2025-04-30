@@ -362,15 +362,20 @@ def convert_with_reportlab(md_content, output_pdf):
 
                 continue
 
-            # Procesar encabezados
+            # Procesar encabezados con formato en línea
             if line.startswith('# '):
-                flowables.append(Paragraph(line[2:], styles['Title']))
+                # Aplicar formato en línea al texto del encabezado
+                formatted_text = process_inline_formatting(line[2:])
+                flowables.append(Paragraph(formatted_text, styles['Title']))
             elif line.startswith('## '):
-                flowables.append(Paragraph(line[3:], styles['Heading2']))
+                formatted_text = process_inline_formatting(line[3:])
+                flowables.append(Paragraph(formatted_text, styles['Heading2']))
             elif line.startswith('### '):
-                flowables.append(Paragraph(line[4:], heading3_style))
+                formatted_text = process_inline_formatting(line[4:])
+                flowables.append(Paragraph(formatted_text, heading3_style))
             elif line.startswith('#### '):
-                flowables.append(Paragraph(line[5:], heading4_style))
+                formatted_text = process_inline_formatting(line[5:])
+                flowables.append(Paragraph(formatted_text, heading4_style))
 
             # Procesar listas no ordenadas con anidamiento
             elif line.lstrip().startswith('- ') or line.lstrip().startswith('* '):
@@ -413,10 +418,13 @@ def convert_with_reportlab(md_content, output_pdf):
 def process_inline_formatting(text):
     import re
 
+    if text is None:
+        return ""
+
     # Escapar caracteres especiales de XML primero
     text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
-    # Ahora procesamos el formato Markdown
+    # Ahora procesamos el formato Markdown de manera más robusta
 
     # Casos especiales de negrita+cursiva
     # ***texto*** o ___texto___
@@ -427,15 +435,22 @@ def process_inline_formatting(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     text = re.sub(r'__(.*?)__', r'<b>\1</b>', text)
 
-    # Cursivas (* o _)
-    text = re.sub(r'\*(.*?)\*', r'<i>\1</i>', text)
-    text = re.sub(r'_(.*?)_', r'<i>\1</i>', text)
+    # Cursivas (* o _) - usando expresiones regulares más precisas
+    # Usamos lookahead y lookbehind para evitar confusión con asteriscos en medio de palabras
+    text = re.sub(r'(?<!\*)\*((?!\*).+?)\*(?!\*)', r'<i>\1</i>', text)
+    text = re.sub(r'(?<!_)_((?!_).+?)_(?!_)', r'<i>\1</i>', text)
 
     # Código en línea
     text = re.sub(r'`(.*?)`', r'<font face="Courier">\1</font>', text)
 
     # Enlaces [texto](url)
     text = re.sub(r'\[(.*?)\]\((.*?)\)', r'<link href="\2">\1</link>', text)
+
+    # Tachado: ~~texto~~
+    text = re.sub(r'~~(.*?)~~', r'<strike>\1</strike>', text)
+
+    # Eliminar escapes de caracteres Markdown
+    text = re.sub(r'\\([\\`*_{}[\]()#+\-.!])', r'\1', text)
 
     return text
 

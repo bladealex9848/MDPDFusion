@@ -10,11 +10,17 @@ logger = logging.getLogger(__name__)
 from mdpdfusion import convert_md_to_pdf
 
 def main():
-    # Archivo de entrada
-    input_file = "test_markdown.md"
+    # Archivo de entrada (por defecto o desde argumentos)
+    if len(sys.argv) > 1:
+        input_file = sys.argv[1]
+    else:
+        input_file = "test_markdown.md"
 
     # Carpeta de salida (carpeta temp)
     output_folder = "temp"
+
+    # Asegurarse de que la carpeta de salida existe
+    os.makedirs(output_folder, exist_ok=True)
 
     # Verificar que el archivo de entrada existe
     if not os.path.exists(input_file):
