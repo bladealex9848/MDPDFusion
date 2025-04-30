@@ -5,6 +5,23 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2023-05-01
+
+### Agregado
+- Interfaz gráfica (GUI) con PyQt5 para arrastrar y soltar archivos
+- Estructura de proyecto modular y escalable
+- Pruebas unitarias y de integración completas
+- Generación de ejecutable con PyInstaller
+- Informes de pruebas y cobertura de código
+- Instalación como paquete Python con setup.py
+
+### Mejorado
+- Organización del código en módulos especializados
+- Documentación detallada de la estructura del proyecto
+- Múltiples puntos de entrada para diferentes interfaces
+- Manejo de errores y logging más robusto
+- Experiencia de usuario con interfaz gráfica intuitiva
+
 ## [0.3.2] - 2023-04-30
 
 ### Corregido
@@ -98,7 +115,8 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ### Corregido
 - Manejo de errores durante la conversión de archivos
 
-[Unreleased]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/bladealex9848/MDPDFusion/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.2...v1.0.0
 [0.3.2]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/bladealex9848/MDPDFusion/compare/v0.2.1...v0.3.0

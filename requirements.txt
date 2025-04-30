@@ -1,12 +1,21 @@
-# Interfaz de usuario
+# Dependencias principales
 streamlit>=1.45.0  # Framework para crear aplicaciones web interactivas
-
-# Procesamiento de Markdown
 markdown>=3.8  # Librería para convertir Markdown a HTML
-
-# Conversión de documentos
 pypandoc>=1.15  # Interfaz Python para Pandoc (conversor universal de documentos)
 reportlab>=4.4.0  # Librería para generar PDFs
-
-# Procesamiento HTML
 beautifulsoup4>=4.12.0  # Librería para analizar documentos HTML/XML
+
+# Interfaz gráfica
+PyQt5>=5.15.0  # Framework para crear interfaces gráficas
+
+# Generación de ejecutable
+pyinstaller>=5.6.0  # Herramienta para crear ejecutables
+
+# Pruebas
+pytest>=7.0.0  # Framework para pruebas unitarias
+pytest-cov>=3.0.0  # Plugin para medir cobertura de código
+pytest-html>=3.1.0  # Plugin para generar informes HTML
+
+# Desarrollo
+black>=22.0.0  # Formateador de código
+flake8>=4.0.0  # Linter para verificar estilo de código
