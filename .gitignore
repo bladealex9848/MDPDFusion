@@ -33,3 +33,6 @@ build/
 
 # Archivos de configuración local
 .env
+
+# Carpeta de temporales
+temp/

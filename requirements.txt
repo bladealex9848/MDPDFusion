@@ -1,4 +1,12 @@
-streamlit
-markdown
-pypandoc
-reportlab
+# Interfaz de usuario
+streamlit>=1.45.0  # Framework para crear aplicaciones web interactivas
+
+# Procesamiento de Markdown
+markdown>=3.8  # Librería para convertir Markdown a HTML
+
+# Conversión de documentos
+pypandoc>=1.15  # Interfaz Python para Pandoc (conversor universal de documentos)
+reportlab>=4.4.0  # Librería para generar PDFs
+
+# Procesamiento HTML
+beautifulsoup4>=4.12.0  # Librería para analizar documentos HTML/XML
