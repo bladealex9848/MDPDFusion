@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="mdpdfusion",
-    version="0.3.2",
+    version="1.2.0",
     author="Alexander Oviedo Fadul",
     author_email="bladealex@gmail.com",
     description="Conversor de Markdown a PDF con múltiples interfaces",

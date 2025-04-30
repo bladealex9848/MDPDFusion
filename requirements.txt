@@ -4,6 +4,8 @@ markdown>=3.8  # Librería para convertir Markdown a HTML
 pypandoc>=1.15  # Interfaz Python para Pandoc (conversor universal de documentos)
 reportlab>=4.4.0  # Librería para generar PDFs
 beautifulsoup4>=4.12.0  # Librería para analizar documentos HTML/XML
+requests>=2.28.0  # Librería para realizar peticiones HTTP
+pillow>=9.0.0  # Librería para procesamiento de imágenes
 
 # Interfaz gráfica
 PyQt5>=5.15.0  # Framework para crear interfaces gráficas

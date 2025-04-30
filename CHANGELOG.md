@@ -5,6 +5,34 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2023-05-01
+
+### Agregado
+- Soporte para diagramas ASCII (arte ASCII) con preservación exacta del formato
+- Mejora significativa en el procesamiento de diagramas Mermaid
+- Detección automática de diagramas ASCII basada en caracteres especiales
+- Depuración mejorada para diagramas Mermaid con guardado temporal de imágenes
+
+### Mejorado
+- Uso de la clase Preformatted de ReportLab para preservar espacios y formato exacto
+- Presentación visual de diagramas ASCII con recuadro y título
+- Manejo más robusto de errores en la generación de diagramas
+- Logging detallado para facilitar la depuración de problemas
+
+## [1.1.0] - 2023-05-01
+
+### Agregado
+- Soporte para diagramas de flujo en lenguaje Mermaid
+- Conversión de diagramas Mermaid a imágenes usando API externa
+- Mejoras en el ejecutable para incluir todas las dependencias
+- Integración con bibliotecas requests y Pillow para procesamiento de imágenes
+
+### Mejorado
+- Robustez del ejecutable con importaciones explícitas
+- Manejo de errores para casos donde no se puede generar el diagrama
+- Documentación sobre el soporte para diagramas Mermaid
+- Experiencia de usuario al visualizar diagramas de flujo
+
 ## [1.0.0] - 2023-05-01
 
 ### Agregado
@@ -115,7 +143,9 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ### Corregido
 - Manejo de errores durante la conversión de archivos
 
-[Unreleased]: https://github.com/bladealex9848/MDPDFusion/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/bladealex9848/MDPDFusion/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/bladealex9848/MDPDFusion/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/bladealex9848/MDPDFusion/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.2...v1.0.0
 [0.3.2]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/bladealex9848/MDPDFusion/compare/v0.3.0...v0.3.1

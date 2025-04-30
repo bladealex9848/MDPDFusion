@@ -19,6 +19,8 @@ MDPDFusion es una herramienta versátil que permite a los usuarios convertir arc
   - Bloques de código con resaltado de sintaxis
   - Imágenes con ajuste automático de tamaño
   - Enlaces internos funcionales entre secciones del documento
+  - Diagramas de flujo en lenguaje Mermaid convertidos a imágenes
+  - Diagramas ASCII con preservación exacta del formato
 - **Flexibilidad**:
   - Soporte para la carga de múltiples archivos .md
   - Conversión rápida y eficiente
@@ -182,6 +184,50 @@ Contenido...
 ```
 
 Los enlaces internos se convierten automáticamente en enlaces funcionales en el PDF generado.
+
+### Diagramas de Flujo (Mermaid)
+
+MDPDFusion soporta diagramas de flujo escritos en lenguaje Mermaid:
+
+```markdown
+```mermaid
+flowchart TD
+    A[Inicio] --> B{Decisión}
+    B -->|Sí| C[Proceso 1]
+    B -->|No| D[Proceso 2]
+    C --> E[Fin]
+    D --> E
+```
+```
+
+Los diagramas Mermaid se convierten automáticamente en imágenes en el PDF generado. Esta funcionalidad requiere conexión a Internet ya que utiliza la API de Mermaid.ink para generar las imágenes.
+
+### Diagramas ASCII
+
+MDPDFusion soporta diagramas creados con caracteres ASCII:
+
+```markdown
+```
+┌───────────────────────────────────────────────────────────┐
+│                   SISTEMA (FRONTEND)                      │
+└───────────┬─────────────────┬─────────────────┬───────────┘
+            │                 │                 │
+┌───────────▼─────┐   ┌───────▼────────┐   ┌────▼──────────┐
+│ PORTAL         │   │ PORTAL         │   │ PORTAL        │
+│ USUARIOS       │   │ ADMINISTRADOR  │   │ REPORTES      │
+└───────────┬─────┘   └───────┬────────┘   └────┬──────────┘
+            │                 │                 │
+┌───────────▼─────────────────▼─────────────────▼───────────┐
+│                   BACKEND API                             │
+└────────────────────────────┬────────────────────────────┘
+                             │
+                  ┌──────────▼─────────┐
+                  │  BASE DE DATOS     │
+                  └────────────────────┘
+```
+```
+
+Los diagramas ASCII se detectan automáticamente y se preserva su formato exacto en el PDF generado, manteniendo todos los espacios y caracteres especiales.
 
 ### Manejo de Errores
 

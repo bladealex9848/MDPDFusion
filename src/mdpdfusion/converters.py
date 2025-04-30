@@ -14,7 +14,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, Preformatted
 
 from .formatters import process_inline_formatting, create_anchor_id
 
@@ -24,11 +24,11 @@ logger = logging.getLogger("mdpdfusion")
 def convert_with_pypandoc(md_content, output_pdf):
     """
     Convierte contenido Markdown a PDF usando pypandoc.
-    
+
     Args:
         md_content (str): Contenido Markdown a convertir
         output_pdf (str): Ruta donde guardar el PDF generado
-        
+
     Returns:
         bool: True si la conversión fue exitosa, False en caso contrario
     """
@@ -43,11 +43,11 @@ def convert_with_pypandoc(md_content, output_pdf):
 def convert_with_reportlab(md_content, output_pdf):
     """
     Convierte contenido Markdown a PDF usando ReportLab.
-    
+
     Args:
         md_content (str): Contenido Markdown a convertir
         output_pdf (str): Ruta donde guardar el PDF generado
-        
+
     Returns:
         bool: True si la conversión fue exitosa, False en caso contrario
     """
@@ -64,7 +64,7 @@ def convert_with_reportlab(md_content, output_pdf):
 
         # Estilos
         styles = getSampleStyleSheet()
-        
+
         # Estilo para encabezado nivel 3
         heading3_style = ParagraphStyle(
             'Heading3',
@@ -72,7 +72,7 @@ def convert_with_reportlab(md_content, output_pdf):
             fontSize=14,
             leading=16
         )
-        
+
         # Estilo para encabezado nivel 4
         heading4_style = ParagraphStyle(
             'Heading4',
@@ -80,7 +80,7 @@ def convert_with_reportlab(md_content, output_pdf):
             fontSize=12,
             leading=14
         )
-        
+
         # Estilo para código
         code_style = ParagraphStyle(
             'Code',
@@ -98,7 +98,7 @@ def convert_with_reportlab(md_content, output_pdf):
             spaceAfter=10,
             spaceBefore=10
         )
-        
+
         # Estilos para listas
         bullet_style_level1 = ParagraphStyle(
             'BulletLevel1',
@@ -108,13 +108,13 @@ def convert_with_reportlab(md_content, output_pdf):
             spaceBefore=3,
             spaceAfter=3
         )
-        
+
         bullet_style_level2 = ParagraphStyle(
             'BulletLevel2',
             parent=bullet_style_level1,
             leftIndent=40
         )
-        
+
         bullet_style_level3 = ParagraphStyle(
             'BulletLevel3',
             parent=bullet_style_level1,
@@ -138,6 +138,7 @@ def convert_with_reportlab(md_content, output_pdf):
         flowables = []
         in_code_block = False
         code_content = []
+        code_language = ""
         in_table = False
         table_header = []
         table_rows = []
@@ -196,9 +197,144 @@ def convert_with_reportlab(md_content, output_pdf):
                     # Fin del bloque de código
                     code_text = '<br/>'.join(code_content)
 
-                    # Crear un estilo con fondo gris y borde
-                    code_block = Paragraph(code_text, code_style)
-                    flowables.append(code_block)
+                    # Verificar si es un diagrama Mermaid
+                    if code_language and code_language.lower() == "mermaid":
+                        try:
+                            # Para diagramas Mermaid, intentamos generar una imagen
+                            import io
+                            import base64
+                            import requests
+                            from PIL import Image
+
+                            # Contenido del diagrama Mermaid (sin la primera línea que contiene "mermaid")
+                            # Eliminar la primera línea si contiene "Lenguaje: mermaid"
+                            if len(code_content) > 0 and "Lenguaje: mermaid" in code_content[0]:
+                                mermaid_code = "\n".join(code_content[2:] if len(code_content) > 2 else [])
+                            else:
+                                mermaid_code = "\n".join(code_content)
+
+                            logger.info(f"Procesando diagrama Mermaid: {mermaid_code}")
+
+                            # Intentar generar el diagrama usando la API de Mermaid.ink
+                            mermaid_encoded = base64.urlsafe_b64encode(mermaid_code.encode()).decode()
+                            mermaid_url = f"https://mermaid.ink/img/{mermaid_encoded}?bgColor=white"
+
+                            logger.info(f"URL de Mermaid: {mermaid_url}")
+
+                            try:
+                                # Intentar descargar la imagen
+                                response = requests.get(mermaid_url, timeout=15)
+                                if response.status_code == 200:
+                                    logger.info("Imagen Mermaid descargada correctamente")
+
+                                    # Guardar la imagen temporalmente para depuración
+                                    with open("temp_mermaid.png", "wb") as f:
+                                        f.write(response.content)
+
+                                    # Crear una imagen a partir de los bytes descargados
+                                    img = Image(io.BytesIO(response.content))
+
+                                    # Ajustar tamaño si es necesario
+                                    max_width = 6 * inch  # 6 pulgadas de ancho máximo
+                                    if img.drawWidth > max_width:
+                                        ratio = max_width / img.drawWidth
+                                        img.drawWidth = max_width
+                                        img.drawHeight *= ratio
+
+                                    # Centrar la imagen
+                                    img.hAlign = 'CENTER'
+                                    flowables.append(img)
+
+                                    # Añadir leyenda
+                                    caption_style = ParagraphStyle(
+                                        'Caption',
+                                        parent=styles['Normal'],
+                                        alignment=1,  # Centrado
+                                        fontSize=9,
+                                        leading=11
+                                    )
+                                    flowables.append(Paragraph(f"<i>Diagrama Mermaid</i>", caption_style))
+
+                                    # Continuar con el siguiente bloque
+                                    code_content = []
+                                    in_code_block = False
+                                    i += 1
+                                    continue
+                                else:
+                                    logger.warning(f"Error al descargar imagen Mermaid: {response.status_code} - {response.text}")
+                            except Exception as e:
+                                logger.warning(f"No se pudo generar el diagrama Mermaid: {str(e)}")
+                                # Si falla, mostrar como código normal
+                        except ImportError as ie:
+                            logger.warning(f"No se pudo importar las bibliotecas necesarias para generar diagramas Mermaid: {str(ie)}")
+                            # Si falla, mostrar como código normal
+
+                    # Verificar si es un diagrama ASCII (contiene caracteres como │, ┌, ┐, └, ┘, ─, etc.)
+                    ascii_diagram_chars = ['│', '┌', '┐', '└', '┘', '─', '┬', '┴', '┼', '├', '┤', '━', '┃', '┏', '┓', '┗', '┛']
+                    is_ascii_diagram = any(char in '\n'.join(code_content) for char in ascii_diagram_chars)
+
+                    if is_ascii_diagram:
+                        # Para diagramas ASCII, usar Preformatted que preserva espacios y formato exacto
+                        logger.info("Procesando diagrama ASCII")
+
+                        # Unir el contenido original sin procesar para preservar el formato exacto
+                        raw_content = '\n'.join(code_content)
+
+                        # Eliminar la primera línea si contiene información de lenguaje
+                        if len(code_content) > 0 and code_content[0].startswith("<b>Lenguaje:"):
+                            if len(code_content) > 1 and code_content[1] == "":
+                                raw_content = '\n'.join(code_content[2:])
+                            else:
+                                raw_content = '\n'.join(code_content[1:])
+
+                        # Crear un estilo para el diagrama ASCII
+                        ascii_style = ParagraphStyle(
+                            'AsciiArt',
+                            parent=styles['Normal'],
+                            fontName='Courier',
+                            fontSize=8,
+                            leading=9,
+                            leftIndent=36,
+                            rightIndent=36,
+                            spaceAfter=10,
+                            spaceBefore=10,
+                        )
+
+                        # Usar Preformatted para preservar espacios y formato exacto
+                        # Añadir un recuadro alrededor del diagrama
+                        flowables.append(Spacer(1, 5))
+
+                        # Título del diagrama
+                        flowables.append(Paragraph("<b>Diagrama ASCII</b>", ParagraphStyle(
+                            'AsciiTitle',
+                            parent=styles['Normal'],
+                            alignment=1,  # Centrado
+                            fontSize=9,
+                            leading=11,
+                            spaceBefore=5,
+                            spaceAfter=5
+                        )))
+
+                        # Crear un recuadro con fondo gris claro
+                        ascii_box = Table(
+                            [[Preformatted(raw_content, ascii_style)]],
+                            colWidths=[6.5 * inch]
+                        )
+                        ascii_box.setStyle(TableStyle([
+                            ('BACKGROUND', (0, 0), (-1, -1), colors.lightgrey.clone(alpha=0.3)),
+                            ('BOX', (0, 0), (-1, -1), 1, colors.grey),
+                            ('TOPPADDING', (0, 0), (-1, -1), 10),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                        ]))
+
+                        flowables.append(ascii_box)
+                        flowables.append(Spacer(1, 5))
+                    else:
+                        # Para código normal o si falló la generación del diagrama Mermaid
+                        code_block = Paragraph(code_text, code_style)
+                        flowables.append(code_block)
 
                     code_content = []
                     in_code_block = False
@@ -206,12 +342,13 @@ def convert_with_reportlab(md_content, output_pdf):
                     # Inicio del bloque de código
                     in_code_block = True
                     # Capturar el lenguaje si está especificado
+                    code_language = ""
                     if len(line) > 3:
-                        language = line[3:].strip()
-                        if language:
+                        code_language = line[3:].strip()
+                        if code_language:
                             # Añadir el lenguaje como una etiqueta antes del bloque de código
                             # pero no lo incluimos en el flowable todavía, lo guardaremos para después
-                            code_content.append(f"<b>Lenguaje: {language}</b>")
+                            code_content.append(f"<b>Lenguaje: {code_language}</b>")
                             # Añadir una línea en blanco después del lenguaje
                             code_content.append("")
                 i += 1
